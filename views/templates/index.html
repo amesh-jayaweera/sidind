@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% load static %}
+<head>
+    <title>LinkedIn</title>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script type='text/javascript'>
+
+                function onAddComment(id)
+                {
+                    console.log(id)
+                }
+
+    </script>
+
+</head>
+<body style="background-color:white;">
+       <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+          <a class="navbar-brand blue" href="#" style="color:#1fff;font-weight:bold;">LinkedIn</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+          </div>
+        </nav>
+
+        <br/><br/>
+
+       <div class="container">
+            {% if data %}
+               {% for e in data %}
+                    <div class="card promoting-card" style="width: 50%;margin-left:25%;margin-right:25%">
+                      <!-- Card content -->
+                      <div class="card-body d-flex flex-row">
+                        <!-- Avatar -->
+                          {% if e.userImageUrl %}
+                            <img src={{ e.userImageUrl }} class="rounded-circle mr-3" height="50px" width="50px" alt="avatar">
+                          {% else %}
+                            <img src="https://media.istockphoto.com/photos/businessman-silhouette-as-avatar-or-default-profile-picture-picture-id476085198?k=6&m=476085198&s=612x612&w=0&h=5cDQxXHFzgyz8qYeBQu2gCZq1_TN0z40e_8ayzne0X0=" class="rounded-circle mr-3" height="50px" width="50px" alt="avatar">
+                          {% endif %}
+                        <!-- Content -->
+                        <div>
+                          <!-- User or Company Name -->
+                          <h4 class="card-title font-weight-bold mb-2">{{ e.user }}</h4>
+                          <!-- No of Followers -->
+                          <p class="card-text"><i class="far fa-clock pr-2"></i> {{ e.followers }} followers</p>
+                        </div>
+                      </div>
+
+                        {% if e.imageUrl %}
+                              <!-- Card image -->
+                              <div class="view overlay">
+                                <img class="card-img-top rounded-0" src={{ e.imageUrl }} alt="Card image cap">
+                                <a href="#!">
+                                  <div class="mask rgba-white-slight"></div>
+                                </a>
+                              </div>
+                        {% endif %}
+
+                      <!-- Card content -->
+                      <div class="card-body">
+                          <p> {{ e.description }}</p> <br/>
+                          <a href={{ e.url }}> {{ e.url }}</a>
+                          <br/><br/>
+                           <button type="button" class="btn btn-danger btn-sm float-right"  style="color:white" data-toggle="modal" data-target="#comment{{e.id}}">All Comments</button>
+                          <i class="fa fa-thumbs-up" style="font-size:30px;cursor:pointer;user-select:none;color:darkblue;margin-right:5px;"></i>{{ e.reacts }}
+                          <br/><br/>
+                          <form class="was-validated" action="addComment" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                              <label for="comment">Your Comment  </label>
+                              <input type="text" class="form-control" id="comment" placeholder="Enter Comment ..." name="comment" required>
+                                <input type="hidden" class="form-control" id="id"  value={{e.id}} name="id" required>
+                              <div class="valid-feedback">Valid.</div>
+                              <div class="invalid-feedback">Required this field to add your comment.</div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Add Comment</button>
+                            </div>
+                        </form>
+
+                      </div>
+                    </div>
+
+                   <!-- The Modal View All Comments -->
+         <div class="modal" id="comment{{e.id}}">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">All Comments</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <!-- Modal body -->
+              <div class="modal-body">
+                  {% for comment in e.comments %}
+                    <p>{{comment}}</p>
+                  {% endfor %}
+              </div>
+              <!-- Modal footer -->
+                 <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                      </div>
+                 </div>
+          </div>
+        </div>
+
+
+           <br/>
+               {% endfor %}
+            {% else %}
+               There are no records in the system
+            {% endif %}
+       </div>
+
+</body>
+</html>
